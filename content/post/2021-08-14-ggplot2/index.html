@@ -1,0 +1,236 @@
+---
+title: 纯纯的ggplot2画好看的柱状图，统计、分面
+author: Song Ou-Yang
+date: '2021-08-14'
+slug: ggplot2
+categories: []
+tags:
+  - R
+subtitle: ''
+summary: ''
+authors: []
+lastmod: '2021-08-14T21:10:15+08:00'
+featured: no
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: no
+projects: []
+---
+
+
+
+<p>柱状图是最常见的统计作图,当然Excel和Prism都可以画,还有一些shiny可以交互画图,但是用R的话,也可以有很好看的效果,本文用Rmarkdown做下效果,要有统计结果,要有统计标识,还有个各个样本的数值.</p>
+<p>比如有这样一个表:</p>
+<table>
+<thead>
+<tr class="header">
+<th>Value</th>
+<th>Group</th>
+<th>Gene</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1.092</td>
+<td>Control</td>
+<td>GeneA</td>
+<td>1.092</td>
+</tr>
+<tr class="even">
+<td>0.875</td>
+<td>Control</td>
+<td>GeneA</td>
+<td>0.875</td>
+</tr>
+<tr class="odd">
+<td>1.047</td>
+<td>Control</td>
+<td>GeneA</td>
+<td>1.047</td>
+</tr>
+<tr class="even">
+<td>22.111</td>
+<td>Treat</td>
+<td>GeneA</td>
+<td>22.111</td>
+</tr>
+<tr class="odd">
+<td>18.852</td>
+<td>Treat</td>
+<td>GeneA</td>
+<td>18.852</td>
+</tr>
+<tr class="even">
+<td>22.575</td>
+<td>Treat</td>
+<td>GeneA</td>
+<td>22.575</td>
+</tr>
+<tr class="odd">
+<td>1.057</td>
+<td>Control</td>
+<td>GeneB</td>
+<td>1.057</td>
+</tr>
+<tr class="even">
+<td>1.057</td>
+<td>Control</td>
+<td>GeneB</td>
+<td>1.057</td>
+</tr>
+<tr class="odd">
+<td>0.895</td>
+<td>Control</td>
+<td>GeneB</td>
+<td>0.895</td>
+</tr>
+<tr class="even">
+<td>51.268</td>
+<td>Treat</td>
+<td>GeneB</td>
+<td>51.268</td>
+</tr>
+<tr class="odd">
+<td>43.411</td>
+<td>Treat</td>
+<td>GeneB</td>
+<td>43.411</td>
+</tr>
+<tr class="even">
+<td>46.851</td>
+<td>Treat</td>
+<td>GeneB</td>
+<td>46.851</td>
+</tr>
+<tr class="odd">
+<td>0.975</td>
+<td>Control</td>
+<td>GeneC</td>
+<td>0.975</td>
+</tr>
+<tr class="even">
+<td>0.968</td>
+<td>Control</td>
+<td>GeneC</td>
+<td>0.968</td>
+</tr>
+<tr class="odd">
+<td>1.059</td>
+<td>Control</td>
+<td>GeneC</td>
+<td>1.059</td>
+</tr>
+<tr class="even">
+<td>14.156</td>
+<td>Treat</td>
+<td>GeneC</td>
+<td>14.156</td>
+</tr>
+<tr class="odd">
+<td>16.374</td>
+<td>Treat</td>
+<td>GeneC</td>
+<td>16.374</td>
+</tr>
+<tr class="even">
+<td>19.338</td>
+<td>Treat</td>
+<td>GeneC</td>
+<td>19.338</td>
+</tr>
+</tbody>
+</table>
+<p>如果是在excel上,我们其实可以用代码直接复制过来</p>
+<blockquote>
+<p>data &lt;- read.table(pipe(“pbpaste”), # 读取剪切板中的数据 sep=", # 指定分隔符 header = TRUE</p>
+</blockquote>
+<p>当然我们也可以直接用代码导入进来,最好是csv格式的,这个格式稳定,当然也可以直接用File的Import Dataset</p>
+<pre class="r"><code>data &lt;- read.csv(&quot;~/Desktop/data.csv&quot;)</code></pre>
+<pre class="r"><code>library(ggplot2) #画图
+library(ggpubr) ### 加载了这个包就不用再次统计均数和标准差了,统计也方便
+library(ggsignif)  ### 统计,当然用ggpubr的话会更简单,但是标识线的颜色改不了
+ggplot(data,
+       aes(x=Group,y=Value,color=Group,fill=Group))+
+    geom_bar(stat=&quot;summary&quot;,fun=mean,position=&quot;dodge&quot;)+ #柱状图
+    stat_summary(fun.data = &#39;mean_sd&#39;, geom = &quot;errorbar&quot;, width = 0.5,position = position_dodge(0.9))+ ##&#39;mean_sd&#39; 自动计算均数+标准差，添加误差棒,当然也可以计算mean+se,mean_ci等，跟ggpubr一模一样，width可以设置误差棒的宽度，而0.9是误差棒的位置
+    facet_grid(~Gene,scales = &#39;free&#39;)+ #分面
+    theme_minimal(base_size = 13)+ #主题和字体大小
+    scale_color_manual(values = c(&#39;steelblue&#39;,&#39;firebrick&#39;))+
+    scale_fill_manual(values = c(&#39;steelblue&#39;,&#39;firebrick&#39;))+
+    geom_signif(comparisons = list(c(&quot;Control&quot;,&quot;Treat&quot;)),test = &#39;t.test&#39;)+
+    labs(x=NULL,y=&#39;Relative gene expression&#39;)</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p>如果不想显示具体的P值，还可以自动标星号， <code>geom_signif</code>里面加一句<code>map_signif_level=T</code></p>
+<pre class="r"><code>ggplot(data,
+       aes(x=Group,y=Value,color=Group,fill=Group))+
+    geom_bar(stat=&quot;summary&quot;,fun=mean,position=&quot;dodge&quot;)+
+    stat_summary(fun.data = &#39;mean_sd&#39;, geom = &quot;errorbar&quot;, width = 0.5,position = position_dodge(0.9))+
+    facet_grid(~Gene,scales = &#39;free&#39;)+
+    theme_minimal(base_size = 13)+
+    scale_color_manual(values = c(&#39;steelblue&#39;,&#39;firebrick&#39;))+
+    scale_fill_manual(values = c(&#39;steelblue&#39;,&#39;firebrick&#39;))+
+    geom_signif(comparisons = list(c(&quot;Control&quot;,&quot;Treat&quot;)),map_signif_level=T,test = &#39;t.test&#39;)+
+    labs(x=NULL,y=&#39;Relative gene expression&#39;)+
+    geom_dotplot(stackdir = &quot;center&quot;, binaxis = &quot;y&quot;, 
+                 fill = &quot;gray&quot;, 
+                 dotsize = 0.9,position = position_dodge(0.9))</code></pre>
+<pre><code>## Bin width defaults to 1/30 of the range of the data. Pick better value with `binwidth`.</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p>比如你不想要Group的标签,也想换个prism主题假装一下grahpad作图,也可以的</p>
+<pre class="r"><code>library(ggprism)
+ggplot(data,
+       aes(x=Group,y=Value,color=Group,fill=Group))+
+    geom_bar(stat=&quot;summary&quot;,fun=mean,position=&quot;dodge&quot;)+
+    stat_summary(fun.data = &#39;mean_sd&#39;, geom = &quot;errorbar&quot;, width = 0.5,position = position_dodge(0.9))+
+    facet_wrap(~Gene,scales = &#39;free&#39;)+
+    theme_prism(base_size = 12)+
+    scale_color_manual(values = c(&#39;steelblue&#39;,&#39;brown&#39;))+
+    scale_fill_manual(values = c(&#39;steelblue&#39;,&#39;brown&#39;))+
+    geom_signif(comparisons = list(c(&quot;Control&quot;,&quot;Treat&quot;)),map_signif_level=T,test = &#39;t.test&#39;)+
+    labs(x=NULL,y=&#39;Relative gene expression&#39;)+
+    geom_dotplot(stackdir = &quot;center&quot;, binaxis = &quot;y&quot;, 
+                 fill = &quot;gray&quot;, 
+                 dotsize = 0.9,position = position_dodge(0.9))+
+     theme(legend.position =&quot;none&quot;)</code></pre>
+<pre><code>## Bin width defaults to 1/30 of the range of the data. Pick better value with `binwidth`.</code></pre>
+<div id="section" class="section level2">
+<h2><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-6-1.png" width="672" /></h2>
+<p>如果觉得两组相差太大,想要截断一下,以前没有好的解决方案,后面著名的Y叔叔出手开发了’ggbreak’,几乎就完美解决了,不过还有bug,就是不能使用geom_dotplot,因为底下的点就放大,就像下面这样很难看,所以暂时不加载dotplot</p>
+<pre class="r"><code>## install.packages(&quot;ggbreak&quot;) #需要安装的只要一条指令
+library(ggbreak)
+ggplot(data,
+       aes(x=Group,y=Value,color=Group,fill=Group))+
+    geom_bar(stat=&quot;summary&quot;,fun=mean,position=&quot;dodge&quot;)+
+    stat_summary(fun.data = &#39;mean_sd&#39;, geom = &quot;errorbar&quot;, width = 0.5,position = position_dodge(0.9))+
+    facet_grid(~Gene,scales = &#39;free&#39;)+
+    theme_minimal(base_size = 13)+
+    scale_color_manual(values = c(&#39;steelblue&#39;,&#39;firebrick&#39;))+
+    scale_fill_manual(values = c(&#39;steelblue&#39;,&#39;firebrick&#39;))+
+    geom_signif(comparisons = list(c(&quot;Control&quot;,&quot;Treat&quot;)),map_signif_level=T,test = &#39;t.test&#39;)+
+    labs(x=NULL,y=&#39;Relative gene expression&#39;)+
+   geom_dotplot(stackdir = &quot;center&quot;, binaxis = &quot;y&quot;, 
+                 fill = &quot;gray&quot;, 
+                 dotsize = 0.9,position = position_dodge(0.9))+
+  scale_y_break(c(1.5, 10) , scales=&#39;free&#39;)</code></pre>
+<pre><code>## Bin width defaults to 1/30 of the range of the data. Pick better value with `binwidth`.
+## Bin width defaults to 1/30 of the range of the data. Pick better value with `binwidth`.
+## Bin width defaults to 1/30 of the range of the data. Pick better value with `binwidth`.</code></pre>
+</div>
+<div id="section-1" class="section level2">
+<h2><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-7-1.png" width="672" /></h2>
+<p>所以暂时不加载dotplot, 而且分面的截断不太好,不过可以自己慢慢摸索</p>
+<pre class="r"><code>ggplot(data,
+       aes(x=Group,y=Value,color=Group,fill=Group))+
+    geom_bar(stat=&quot;summary&quot;,fun=mean,position=&quot;dodge&quot;)+
+    stat_summary(fun.data = &#39;mean_sd&#39;, geom = &quot;errorbar&quot;, width = 0.5,position = position_dodge(0.9))+
+    facet_grid(~Gene,scales = &#39;free&#39;)+
+    theme_minimal(base_size = 13)+
+    scale_color_manual(values = c(&#39;steelblue&#39;,&#39;firebrick&#39;))+
+    scale_fill_manual(values = c(&#39;steelblue&#39;,&#39;firebrick&#39;))+
+    geom_signif(comparisons = list(c(&quot;Control&quot;,&quot;Treat&quot;)),map_signif_level=T,test = &#39;t.test&#39;)+
+    labs(x=NULL,y=&#39;Relative gene expression&#39;)+
+  scale_y_break(c(1.5, 10) , scales=&#39;free&#39;)</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+</div>
