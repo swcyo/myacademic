@@ -125,14 +125,14 @@ comments:
   commento:
     url: ''
 search:
-  provider: wowchemy
+  provider: ouyangsong
   algolia:
     app_id: ''
     api_key: ''
     index_name: ''
     show_logo: false
 map:
-  provider: ''
+  provider: 3
   api_key: ''
   zoom: 15
 marketing:
@@ -140,7 +140,7 @@ marketing:
   google_tag_manager: ''
   google_site_verification: ''
   baidu_site_verification: ''
-  baidu_tongji: ''
+  baidu_tongji: '17100875'
 cms:
   branch: master
   local_backend: false
