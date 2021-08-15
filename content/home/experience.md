@@ -22,29 +22,40 @@ date_format: Jan 2006
 #   Leave `date_end` empty if it's your current employer.
 #   Begin multi-line descriptions with YAML's `|2-` multi-line prefix.
 experience:
-  - title: CEO
-    company: GenCoin
-    company_url: ''
-    company_logo: org-gc
-    location: California
-    date_start: '2021-01-01'
+  - title: Diary work
+    company: First Affiliated Hospital, School of Medicine, Shihezi University
+    company_url: 'https://www.sdyfy.com.cn'
+    company_logo: 
+    location: Shihezi, Xinjiang
+    date_start: '2013-07-02'
     date_end: ''
     description: |2-
-        Responsibilities include:
+        Special fields include:
         
-        * Analysing
-        * Modelling
-        * Deploying
+        * Urogenital tumors
+        * Urolithiasis
+        * Male infertility
+        * Male erectile dysfunction
         
-  - title: Professor of Semiconductor Physics
-    company: University X
+  - title: Advanced study
+    company: Urology, Andrology, IVF
     company_url: ''
-    company_logo: org-x
-    location: California
-    date_start: '2016-01-01'
-    date_end: '2020-12-31'
-    description: Taught electronic engineering and researched semiconductor physics.
-
+    company_logo: 
+    location: Isreal, Zhengzhou, Beijing
+    date_start: '2015-12-01'
+    date_end: ''
+    description: |2-
+        Training unit:
+    
+        * Hillel Yaffe Medical Center,Isreal (2015.12-2016.3)
+        * First Affiliated Hospital of Zhengzhou University (2016.12-2017.3)
+        * People's Hospital of Peking University (2017.12)
+        
+        Future study (PhD):
+    
+       
+        * Tongji Hospital, Tongji Medical College, Huazhong University of Science and Technology (2018.9-2021.9)
+        
 design:
   columns: '2'
 ---
