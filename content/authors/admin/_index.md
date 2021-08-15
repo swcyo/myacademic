@@ -21,7 +21,7 @@ social:
     icon_pack: ai
     link: https://xueshu.baidu.com/scholarID/CN-BP74VAPJ
   - icon: github
-    icon_pack: fas
+    icon_pack: fab
     link: https://github.com/swcyo
   - icon: cv
     icon_pack: ai
