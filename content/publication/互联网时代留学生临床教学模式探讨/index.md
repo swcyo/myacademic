@@ -16,7 +16,7 @@ image:
   filename: ""
   focal_point: Smart
   preview_only: false
-date: 2021-08-15T10:51:35.691Z
+date: 2017-07-13T10:51:35.691Z
 ---
 ## 互联网时代留学生临床教学模式探讨
 
