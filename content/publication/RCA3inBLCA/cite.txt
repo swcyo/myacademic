@@ -1,0 +1,9 @@
+@article{2020Upregulation,
+  title={Upregulation of RAC3 in bladder cancer predicts adverse clinical outcome and increased tumor immune response},
+  author={ Song, O. Y.  and  Liu, J. H.  and  Wang, Q. Z. },
+  journal={International Journal of Clinical and Experimental Pathology},
+  volume={13},
+  number={12},
+  pages={2937-2949},
+  year={2020},
+}
