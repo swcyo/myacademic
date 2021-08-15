@@ -1,22 +1,22 @@
 ---
-title: R语言处理CCK8或MTT数据，一步绘制生长曲线
-author: Song Ou-Yang
-date: '2021-08-14'
-slug: r-cck8-mtt
-categories: []
-tags: [R]
-subtitle: ''
-summary: ''
+summary: ""
 authors: []
-lastmod: '2021-08-14T18:13:28+08:00'
+author: Song Ou-Yang
+slug: r-cck8-mtt
+lastmod: 2021-08-14T18:13:28+08:00
+title: R语言处理CCK8或MTT数据，一步绘制生长曲线
+subtitle: ""
+date: 2021-08-14
 featured: no
-image:
-  caption: ''
-  focal_point: ''
-  preview_only: no
+tags:
+  - R
+categories: []
 projects: []
+image:
+  caption: ""
+  focal_point: ""
+  preview_only: no
 ---
-
 CCK8数据主要是统计OD450的吸收值，一般的数据形式如下，保存为`csv`格式
 
 | Time | NC          | NC          | NC          | OE          | OE          | OE          |
@@ -28,6 +28,7 @@ CCK8数据主要是统计OD450的吸收值，一般的数据形式如下，保�
 | day5 | 1.505662991 | 1.507610027 | 1.500910915 | 1.387150955 | 1.32420196  | 1.389946927 |
 
 ## 首先我们要进行数据的预处理,把短数据转换为长数据,然后用ggpubr一步作图
+
 ```{r}
 cck8 <- read.csv("~/Desktop/cck8.csv") 
 ## 宽数据转换为长数据
@@ -47,16 +48,18 @@ ggline(cck8_long, x = "Time", y = "OD450",
        ggtheme = theme_prism(base_size = 12))
 ```
 
-![unnamed-chunk-1-1](unnamed-chunk-1-1-9033273.png)
+![unnamed-chunk-1-1](unnamed-chunk-1-1.png)
 
 #### 加个P值，调整坐标，适当美化
 
-- 首先预统计看下结果,记得统计方法一定是'anova',而不是't.test'
-```{r}  
-compare_means(OD450~Group, data=cck8_long, group.by = "Time",method = 'anova')
+* 首先预统计看下结果,记得统计方法一定是'anova',而不是't.test'
 
+```{r}
+compare_means(OD450~Group, data=cck8_long, group.by = "Time",method = 'anova')
 ```
-- 结果还不错，接着添加显著标志,改色lancet配色
+
+* 结果还不错，接着添加显著标志,改色lancet配色
+
 ```{r}
 ggline(cck8_long, x = "Time", y = "OD450", 
        color = "Group",shape='Group', title = 'xxx cell',
@@ -66,9 +69,11 @@ ggline(cck8_long, x = "Time", y = "OD450",
                      method = "anova",  
                      hide.ns = TRUE)
 ```
-![unnamed-chunk-3-1](unnamed-chunk-3-1-9033283.png)
 
-- 可以调的细节还有很多,比如换个背景
+![unnamed-chunk-3-1](unnamed-chunk-3-1.png)
+
+* 可以调的细节还有很多,比如换个背景
+
 ```{r}
 ggline(cck8_long, x = "Time", y = "OD450", 
        color = "Group",shape='Group', title = 'xxx cell',
@@ -78,10 +83,11 @@ ggline(cck8_long, x = "Time", y = "OD450",
                      method = "anova",  
                      hide.ns = TRUE)
 ```
-![unnamed-chunk-4-1](unnamed-chunk-4-1-9033291.png)
+
+![unnamed-chunk-4-1](unnamed-chunk-4-1.png)
 
 细节地方AI处理一下,当然如果你安装了`esquisse`，你也可以直接导出成PPT
 
-```{r}
+```r
 esquisse:::ggplot_to_ppt()
 ```
