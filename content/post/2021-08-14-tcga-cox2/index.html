@@ -1,0 +1,99 @@
+---
+title: 单基因TCGA的Cox森林图怎么画才好看呢
+author: Song Ou-Yang
+date: '2021-08-14'
+slug: tcga-cox2
+categories: []
+tags:
+  - R
+subtitle: ''
+summary: ''
+authors: []
+lastmod: '2021-08-14T18:47:49+08:00'
+featured: no
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: no
+projects: []
+---
+
+
+
+<div id="转自我的简书httpswww.jianshu.comp145b2dc338a0" class="section level3">
+<h3>转自我的简书<a href="https://www.jianshu.com/p/145b2dc338a0">https://www.jianshu.com/p/145b2dc338a0</a></h3>
+<p>首先调取Xena网页的TCGA数据做Cox生存分析，数据可以通过hiplot官网自主研发的ucsc-xena-shiny直接在线获取
+访问<a href="https://hiplot.com.cn/advance/ucsc-xena-shiny">https://hiplot.com.cn/advance/ucsc-xena-shiny</a>
+然后<code>全屏</code>显示，点击<code>Qucik PanCan Analysis</code>下方的<code>TCGA：Molcular Profile Cox Analysis</code></p>
+<p>输入一个你想要的基因，比如<code>RAC3</code>，<code>Select Measure for plot</code>可以设置<code>OS</code>，<code>PFI</code>，<code>DSS</code>和<code>DFI</code>，然后点上方的搜索🔍，就可以看到出的图了</p>
+<p>继续往下滚动鼠标，就可以看到数据了，而且还可以下载</p>
+<p>得到数据以后就可以用R画图了，注意，这里的HR和CI都是Log过的结果，跟别的地方计算的Cox结果有些不一样，可能是方法不一样吧，是因为网站计算的HR结果相差太大了吗？
+由于是log过的结果，所以森林图的X轴不再是HR=1为分界线了，而是以log2HR=<code>0</code>为分界线。。。</p>
+<pre class="r"><code>RAC3_mRNA_OS_pancan_unicox &lt;- read.csv(&quot;~/Desktop/RAC3_mRNA_OS_pancan_unicox.csv&quot;) ##加载csv数据
+library(ggplot2)
+ggplot(RAC3_mRNA_OS_pancan_unicox, aes(HR_log, cancer, col=Type))+  ##定义X轴和Y轴，以类型分类
+  geom_point(size=2.5)+  #固定点的大小
+  geom_errorbarh(aes(xmax =upper_95_log, xmin = lower_95_log), height = 0.4)+ ##设置95%CI区间，就是误差线
+  scale_x_continuous(limits= c(-2, 2), breaks= seq(-1, 1, 1))+ ##设置X轴范围，分割点从-1到1，以1为分界，具体分界看数字分布
+  geom_vline(aes(xintercept = 0))+ #以0为分界线
+  xlab(&#39;HR(95%CI)&#39;) + ylab(&#39; &#39;)+  #定义标签
+  theme_bw(base_size = 12)+ #主题和字体
+  scale_color_manual(values = c(&quot;gray&quot;, &quot;steelblue&quot;, &quot;brown&quot;)) #设置颜色</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-1-1.png" width="672" />
+#### 可以换一下不同的形状表示不同的状态,用的是<code>shape=Type</code></p>
+<pre class="r"><code>ggplot(RAC3_mRNA_OS_pancan_unicox, aes(HR_log, cancer, col=Type,shape=Type))+ #设置不同的形状
+  geom_point(size=3)+
+  geom_errorbarh(aes(xmax =upper_95_log, xmin = lower_95_log), height = 0.4)+
+  scale_x_continuous(limits= c(-2, 2), breaks= seq(-1, 1, 1))+
+  geom_vline(aes(xintercept = 0))+
+  xlab(&#39;HR(95%CI)&#39;) + ylab(&#39; &#39;)+
+  theme_bw(base_size = 12)+
+  scale_color_manual(values = c(&quot;gray&quot;, &quot;steelblue&quot;, &quot;brown&quot;))</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-2-1.png" width="672" />
+### 这个图看起来所有的形状和点都一样大,用什么办法区别P值,类似火山图,我们可以取-log10P值,这样越大就越显著</p>
+<pre class="r"><code># 以-log10P值定义点的大小，点越大，P值越小，越有统计学意义
+ggplot(RAC3_mRNA_OS_pancan_unicox, aes(HR_log, cancer, col=Type))+
+  geom_point(aes(size=-log10(p.value)))+
+  geom_errorbarh(aes(xmax =upper_95_log, xmin = lower_95_log), height = 0.4)+
+  scale_x_continuous(limits= c(-2, 2), breaks= seq(-1, 1, 1))+
+  geom_vline(aes(xintercept = 0))+
+  xlab(&#39;HR(95%CI)&#39;) + ylab(&#39; &#39;)+
+  theme_bw(base_size = 12)+
+  scale_color_manual(values = c(&quot;gray&quot;, &quot;steelblue&quot;, &quot;brown&quot;))</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-3-1.png" width="672" />
+### 再加一个形状</p>
+<pre class="r"><code>ggplot(RAC3_mRNA_OS_pancan_unicox, aes(HR_log, cancer, col=Type,shape=Type))+
+  geom_point(aes(size=-log10(p.value)))+
+  geom_errorbarh(aes(xmax =upper_95_log, xmin = lower_95_log), height = 0.4)+
+  scale_x_continuous(limits= c(-2, 2), breaks= seq(-1, 1, 1))+
+  geom_vline(aes(xintercept = 0))+
+  xlab(&#39;HR(95%CI)&#39;) + ylab(&#39; &#39;)+
+  theme_bw(base_size = 12)+
+  scale_color_manual(values = c(&quot;gray&quot;, &quot;steelblue&quot;, &quot;brown&quot;))</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+</div>
+<div id="看起来很凌乱排个序可好用的是reorder函数" class="section level3">
+<h3>看起来很凌乱,排个序可好,用的是<code>reorder函数</code></h3>
+<pre class="r"><code>ggplot(RAC3_mRNA_OS_pancan_unicox, aes(HR_log,  reorder(cancer,HR_log),  col=Type,shape=Type))+
+         geom_point(aes(size=-log10(p.value)))+
+         geom_errorbarh(aes(xmax =upper_95_log, xmin = lower_95_log), height = 0.4)+
+         scale_x_continuous(limits= c(-2, 2), breaks= seq(-1, 1, 1))+
+         geom_vline(aes(xintercept = 0))+
+         xlab(&#39;HR(95%CI)&#39;) + ylab(&#39; &#39;)+
+        theme_bw(base_size = 12)+
+         scale_color_manual(values = c(&quot;gray&quot;, &quot;steelblue&quot;, &quot;brown&quot;))</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+</div>
+<div id="换个排序方式也行" class="section level3">
+<h3>换个排序方式也行</h3>
+<pre class="r"><code>ggplot(RAC3_mRNA_OS_pancan_unicox, aes(HR_log,  reorder(cancer,-HR_log),  col=Type,shape=Type))+
+         geom_point(aes(size=-log10(p.value)))+
+         geom_errorbarh(aes(xmax =upper_95_log, xmin = lower_95_log), height = 0.4)+
+         scale_x_continuous(limits= c(-2, 2), breaks= seq(-1, 1, 1))+
+         geom_vline(aes(xintercept = 0))+
+         xlab(&#39;HR(95%CI)&#39;) + ylab(&#39; &#39;)+
+        theme_bw(base_size = 12)+
+         scale_color_manual(values = c(&quot;gray&quot;, &quot;steelblue&quot;, &quot;brown&quot;))</code></pre>
+<p><img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p>更多定制，等你发现。。。</p>
+</div>
