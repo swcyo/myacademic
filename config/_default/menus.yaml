@@ -5,22 +5,22 @@
 
 main:
   - name: Home
-    url: '#about'
+    url: ''
     weight: 10
   - name: Blogs
     url: 'post'
     weight: 20
   - name: Projects
-    url: 'project'
-    weight: 30
-  - name: Projects
     url: 'event'
-    weight: 40
+    weight: 30
   - name: Publications
     url: 'publication'
-    weight: 50
-  - name: CV
+    weight: 40
+  - name: Resumé
     url: http://swcyo.gitee.io/cv
+    weight: 50
+  - name: ADMINISTRATOR
+    url: 'admin'
     weight: 60
 #    weight: 70
 # Link to a PDF of your resume/CV from the menu.
