@@ -29,8 +29,6 @@ social:
 organizations:
   - name: First Affiliated Hospital, School of Medicine, Shihezi University
     url: https://www.sdyfy.com.cn/
-  - name: Shihezi University
-    url: https://www.shzu.edu.cn/
 education:
   courses:
     - course: PhD in Urology and Andrology
@@ -50,6 +48,6 @@ user_groups:
 highlight_name: false
 ---
 
-Dr. **Song Ou-Yang**  is a associate professor of urology at the Shihezi University. His research interests include urogenital tumors, urolithiasis, male infertility, male erectile dysfunction,etc.
+Dr. **Song Ou-Yang（欧阳松）**  is a lecturer of urology at the Shihezi University. His research interests include urogenital tumors, urolithiasis, male infertility, male erectile dysfunction,etc.
 
 {{< icon name="download" pack="fas" >}} Download my {{< staticref "uploads/CV.pdf" "newtab" >}}resumé{{< /staticref >}}.
