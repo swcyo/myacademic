@@ -1,3 +1,9 @@
+
+
+本站纯粹通过netlify.org的模板克隆而来，用的是Academic的HUGO主题，然后后台使用netlify的CMS添加文章。
+完全不涉及R语言和额外安装hugo
+
+
 <p align="center"><a href="https://wowchemy.com/templates/" target="_blank" rel="noopener"><img src="https://wowchemy.com/uploads/readmes/academic_logo_200px.png" alt="Hugo Academic Template for Wowchemy Website Builder"></a></p>
 
 # Academic Template for [Hugo](https://github.com/gohugoio/hugo)
