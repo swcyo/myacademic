@@ -10,7 +10,7 @@ interests:
 social:
   - icon: envelope
     icon_pack: fas
-    link: mailto:swcyo@126.com
+    link: mailto:ouyangsong@shzu.edu.cn
   - icon: google-scholar
     icon_pack: ai
     link: https://scholar.google.co.uk/citations?user=eTN286IAAAAJ
@@ -41,7 +41,7 @@ education:
     - course: Bachelor in Clinical medicine
       institution: Changsha Medical college
       year: 2010
-email: swcyo@126.com
+email: ouyangsong@shzu.edu.cn
 superuser: true
 user_groups:
   - Team
